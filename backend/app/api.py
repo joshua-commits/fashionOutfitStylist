@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import aiofiles
 from pathlib import Path
-from preprocessing import preprocess_image
+from app.preprocessing import preprocess_image
 
 app = FastAPI()
 
