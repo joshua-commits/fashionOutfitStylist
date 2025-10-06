@@ -1,0 +1,8 @@
+# backend
+fastapi 
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+alembic
+python-multipart
+pydantic
