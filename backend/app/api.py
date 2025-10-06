@@ -12,7 +12,6 @@ PROCESSED_DIR = Path("static/processed")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
-# Allow requests from your React dev server (Vite default: port 5173)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -20,8 +19,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -34,8 +31,6 @@ async def upload_image(file: UploadFile = File(...)):
         content = await file.read()
         await out_file.write(content)
 
-    # Placeholder for preprocessing later
-    # e.g., preprocess_image(file_path)
     metadata = preprocess_image(file_path, PROCESSED_DIR)
 
     return {"filename": file.filename, "url": f"/static/uploads/{file.filename}"}
