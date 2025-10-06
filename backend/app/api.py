@@ -3,8 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import aiofiles
 from pathlib import Path
+from preprocessing import preprocess_image
 
 app = FastAPI()
+
+UPLOAD_DIR = Path("static/uploads")
+PROCESSED_DIR = Path("static/processed")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
 # Allow requests from your React dev server (Vite default: port 5173)
 app.add_middleware(
@@ -15,8 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-UPLOAD_DIR = Path("static/uploads")
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -31,5 +36,6 @@ async def upload_image(file: UploadFile = File(...)):
 
     # Placeholder for preprocessing later
     # e.g., preprocess_image(file_path)
+    metadata = preprocess_image(file_path, PROCESSED_DIR)
 
     return {"filename": file.filename, "url": f"/static/uploads/{file.filename}"}
