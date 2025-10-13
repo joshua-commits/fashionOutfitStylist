@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import aiofiles
 from pathlib import Path
+from app.preprocessing import preprocess_image
 
 # database
 from .. import models, database
@@ -16,7 +17,11 @@ database.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI(title="Fashion Outfit Stylist - Backend (MVP)")
 
-# Allow requests from your React dev server (Vite default: port 5173)
+UPLOAD_DIR = Path("static/uploads")
+PROCESSED_DIR = Path("static/processed")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -24,9 +29,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-UPLOAD_DIR = Path("static/uploads")
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -81,8 +83,7 @@ async def upload_image(
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Database error: {e}")
 
-    # Future placeholder for ML preprocessing (e.g., embeddings)
-    # preprocess_image(file_path)
+    metadata = preprocess_image(file_path, PROCESSED_DIR)
 
     return {
         "id": new_item.id,
