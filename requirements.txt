@@ -6,3 +6,17 @@ psycopg2-binary
 alembic
 python-multipart
 pydantic
+aiofiles
+pgvector
+
+# AI
+pillow
+torch
+torchvision
+faiss-cpu
+transformers
+python-dotenv
+httpx
+
+# test
+pytest
