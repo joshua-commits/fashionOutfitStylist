@@ -3,6 +3,10 @@ import { uploadImage } from "../api";
 
 const ImageUploader: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [color, setColor] = useState("");
+  const [style, setStyle] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -13,11 +17,11 @@ const ImageUploader: React.FC = () => {
   };
 
   const handleUpload = async () => {
-    if (!file) return alert("Please select a file first.");
+    if (!file || !name || !category) return alert("Please select a file, name, and category.");
     setLoading(true);
     try {
-      const data = await uploadImage(file);
-      setPreviewUrl(`http://127.0.0.1:8000${data.url}`);
+      const data = await uploadImage(file, name, category, color, style);
+      setPreviewUrl(`http://127.0.0.1:8000${data.image_path}`);
     } catch (err) {
       console.error(err);
       alert("Upload failed.");
@@ -29,7 +33,37 @@ const ImageUploader: React.FC = () => {
   return (
     <div className="flex flex-col items-center gap-4 p-6 border rounded-2xl w-full max-w-md mx-auto">
       <h2 className="text-xl font-semibold">Upload Image</h2>
+
       <input type="file" accept="image/*" onChange={handleFileChange} />
+      <input
+        type="text"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className="border rounded-md p-2 w-full"
+      />
+      <input
+        type="text"
+        placeholder="Category"
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+        className="border rounded-md p-2 w-full"
+      />
+      <input
+        type="text"
+        placeholder="Color (optional)"
+        value={color}
+        onChange={(e) => setColor(e.target.value)}
+        className="border rounded-md p-2 w-full"
+      />
+      <input
+        type="text"
+        placeholder="Style (optional)"
+        value={style}
+        onChange={(e) => setStyle(e.target.value)}
+        className="border rounded-md p-2 w-full"
+      />
+
       <button
         onClick={handleUpload}
         disabled={loading}
