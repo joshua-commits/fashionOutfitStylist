@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import aiofiles
 from pathlib import Path
-from app.preprocessing import preprocess_image
+from .preprocessing import preprocess_image
 
 # database
 from .. import models, database
@@ -83,7 +83,11 @@ async def upload_image(
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Database error: {e}")
 
-    metadata = preprocess_image(file_path, PROCESSED_DIR)
+    try:
+        metadata = preprocess_image(file_path, PROCESSED_DIR)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to preprocess: {e}")
+    
 
     return {
         "id": new_item.id,
